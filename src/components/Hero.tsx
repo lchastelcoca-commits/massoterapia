@@ -1,5 +1,5 @@
 import React from 'react';
-import { HERO_IMAGE } from '../data/servicesData';
+import { HERO_IMAGE, LOGO_IMAGE } from '../data/servicesData';
 import { ShieldCheck, Clock, Sparkles, CreditCard, ChevronRight } from 'lucide-react';
 
 interface HeroProps {
@@ -15,13 +15,20 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onExploreServices }) 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
           {/* Left Column: Editorial Headline & Value Proposition */}
           <div className="lg:col-span-6 flex flex-col justify-center">
-            {/* Quiet text kicker with typographic separator */}
-            <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-[#7A6B5D] mb-4">
-              <span>Studio de Bem-Estar</span>
-              <span aria-hidden="true">·</span>
-              <span>São Paulo</span>
-              <span aria-hidden="true">·</span>
-              <span>Sem cobrança antecipada</span>
+            {/* Brand kicker with official logo */}
+            <div className="flex items-center gap-3 mb-5">
+              <img
+                src={LOGO_IMAGE}
+                alt="Alessandra Chastel"
+                className="w-10 h-10 rounded-full object-cover border border-[#C5A880]/50 shadow-xs"
+              />
+              <div className="text-xs font-medium uppercase tracking-wider text-[#7A6B5D] flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <span className="font-semibold text-[#1F2421]">Alessandra Chastel</span>
+                <span aria-hidden="true">·</span>
+                <span>Cuidado que relaxa</span>
+                <span aria-hidden="true">·</span>
+                <span>Beleza que transforma</span>
+              </div>
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-serif font-normal text-[#1F2421] leading-[1.12] tracking-tight mb-6" style={{ textWrap: 'balance' }}>
@@ -29,7 +36,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onExploreServices }) 
             </h1>
 
             <p className="text-base sm:text-lg text-[#5A544C] leading-relaxed mb-8 max-w-xl">
-              Massoterapia clínica e relaxante, e epilação suave com cera morna hipoalergênica. 
+              No studio <strong>Alessandra Chastel</strong> você encontra massoterapia clínica e relaxante, e epilação suave com cera morna hipoalergênica. 
               Consulte nossa tabela de preços e <strong>reserve seu horário sem pagar nada online</strong>: o pagamento é feito diretamente no estúdio no dia do seu atendimento.
             </p>
 
@@ -73,6 +80,23 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onExploreServices }) 
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent pointer-events-none" />
+
+              {/* Official Seal / Logo Badge */}
+              <div className="absolute top-3.5 right-3.5 p-2 pr-3.5 rounded-xl bg-white/95 backdrop-blur-md border border-[#D5C2A5] shadow-md flex items-center gap-2.5">
+                <img
+                  src={LOGO_IMAGE}
+                  alt="Alessandra Chastel"
+                  className="w-10 h-10 rounded-full object-cover border border-[#C5A880]/50 shrink-0"
+                />
+                <div className="text-left">
+                  <span className="block text-xs font-serif font-bold text-[#1F2421] leading-tight">
+                    Alessandra Chastel
+                  </span>
+                  <span className="text-[10px] text-[#7A6B5D] block leading-tight">
+                    Massoterapia & Epilação
+                  </span>
+                </div>
+              </div>
 
               {/* Quiet caption inside image */}
               <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-white/95 backdrop-blur-sm border border-white/40 shadow-xs flex items-center justify-between text-xs text-[#2A2621]">

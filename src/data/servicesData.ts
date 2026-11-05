@@ -1,9 +1,10 @@
 import { Service, Professional, Testimonial } from '../types';
 
-export const HERO_IMAGE = '/src/assets/images/hero_spa_massage_1793900519103.jpg';
-export const MASSAGE_IMAGE = '/src/assets/images/massage_treatment_1793900533139.jpg';
-export const EPILATION_IMAGE = '/src/assets/images/epilation_aesthetic_1793900533369.jpg';
-export const STUDIO_IMAGE = '/src/assets/images/studio_reception_1793900549489.jpg';
+export const LOGO_IMAGE = '/assets/logo_alessandra_chastel.jpeg';
+export const HERO_IMAGE = '/assets/images/hero_spa_massage_1793900519103.jpg';
+export const MASSAGE_IMAGE = '/assets/images/massage_treatment_1793900533139.jpg';
+export const EPILATION_IMAGE = '/assets/images/epilation_aesthetic_1793900533369.jpg';
+export const STUDIO_IMAGE = '/assets/images/studio_reception_1793900549489.jpg';
 
 export const SERVICES_DATA: Service[] = [
   // --- MASSOTERAPIA ---
@@ -275,11 +276,22 @@ export const SERVICES_DATA: Service[] = [
 
 export const PROFESSIONALS_DATA: Professional[] = [
   {
+    id: 'alessandra-chastel',
+    name: 'Alessandra Chastel',
+    role: 'Massoterapeuta & Especialista em Epilação',
+    specialties: ['Massagem Relaxante & Terapêutica', 'Epilação Suave & Visagismo', 'Drenagem Linfática'],
+    bio: 'Fundadora do studio. Dedicada a proporcionar uma experiência única de relaxamento físico, alívio de tensões e cuidado minucioso com a saúde da sua pele.',
+    experienceYears: 10,
+    rating: 5.0,
+    reviewsCount: 220,
+    avatar: LOGO_IMAGE
+  },
+  {
     id: 'dra-helena-moura',
     name: 'Dra. Helena Moura',
     role: 'Fisioterapeuta & Massoterapeuta Clínica',
     specialties: ['Massagem Terapêutica', 'Liberação Miofascial', 'Drenagem Linfática'],
-    bio: 'Especialista em reabilitação miofascial e terapias corporais com mais de 8 anos de prática clínica. Foco em alívio de dores posturais e relaxamento terapêutico.',
+    bio: 'Especialista em reabilitação miofascial e terapias corporais com foco em alívio de contraturas musculares crônicas e relaxamento profundo.',
     experienceYears: 8,
     rating: 4.98,
     reviewsCount: 142,
@@ -288,24 +300,13 @@ export const PROFESSIONALS_DATA: Professional[] = [
   {
     id: 'beatriz-vasconcellos',
     name: 'Beatriz Vasconcellos',
-    role: 'Esteticista & Especialista em Epilação Suave',
-    specialties: ['Epilação com Cera Morna', 'Design Visagista', 'Cuidados Pós-Epilatórios'],
-    bio: 'Certificada internacionalmente em epilação hipoalergênica e visagismo facial. Apaixonada por técnicas que respeitam a sensibilidade da pele e minimizam o desconforto.',
+    role: 'Esteticista & Especialista em Epilação',
+    specialties: ['Epilação com Cera Morna', 'Design de Sobrancelhas', 'Cuidados Pós-Epilatórios'],
+    bio: 'Especialista em epilação hipoalergênica e visagismo facial, com técnicas gentis que minimizam o desconforto e valorizam seus traços.',
     experienceYears: 6,
     rating: 4.96,
     reviewsCount: 188,
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&h=300&fit=crop&crop=face'
-  },
-  {
-    id: 'sofia-lins',
-    name: 'Sofia Lins',
-    role: 'Terapeuta Holística & Aromaterapeuta',
-    specialties: ['Pedras Quentes', 'Aromaterapia Clínica', 'Reflexologia Podal'],
-    bio: 'Formada em terapias integrativas com pós-graduação em Aromaterapia. Cria rituais personalizados de relaxamento que restauram o equilíbrio físico e mental.',
-    experienceYears: 5,
-    rating: 4.95,
-    reviewsCount: 115,
-    avatar: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=300&h=300&fit=crop&crop=face'
   }
 ];
 

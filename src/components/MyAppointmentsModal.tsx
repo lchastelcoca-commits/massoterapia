@@ -1,6 +1,7 @@
 import React from 'react';
 import { Appointment } from '../types';
 import { X, Calendar, Clock, User, Trash2, Send, AlertCircle, Plus } from 'lucide-react';
+import { LOGO_IMAGE } from '../data/servicesData';
 
 interface MyAppointmentsModalProps {
   isOpen: boolean;
@@ -30,13 +31,20 @@ export const MyAppointmentsModal: React.FC<MyAppointmentsModalProps> = ({
       >
         {/* Header */}
         <div className="p-6 border-b border-[#EAE3D9] flex items-center justify-between bg-[#F4EFE6]">
-          <div>
-            <div className="text-xs font-semibold uppercase tracking-wider text-[#7A6B5D]">
-              Suas Reservas
+          <div className="flex items-center gap-3">
+            <img
+              src={LOGO_IMAGE}
+              alt="Alessandra Chastel"
+              className="w-11 h-11 rounded-full object-cover border border-[#C5A880]/50 shrink-0"
+            />
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-[#7A6B5D]">
+                Alessandra Chastel · Suas Reservas
+              </div>
+              <h3 className="text-xl sm:text-2xl font-serif font-semibold text-[#1F2421]">
+                Meus Agendamentos
+              </h3>
             </div>
-            <h3 className="text-xl sm:text-2xl font-serif font-semibold text-[#1F2421]">
-              Meus Agendamentos
-            </h3>
           </div>
           <button
             onClick={onClose}

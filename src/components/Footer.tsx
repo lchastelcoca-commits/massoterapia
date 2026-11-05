@@ -1,5 +1,6 @@
 import React from 'react';
 import { MapPin, Phone, Clock, MessageSquare } from 'lucide-react';
+import { LOGO_IMAGE } from '../data/servicesData';
 
 interface FooterProps {
   onOpenBooking: () => void;
@@ -16,11 +17,26 @@ export const Footer: React.FC<FooterProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand & Mission */}
           <div>
-            <span className="text-2xl font-serif font-bold text-white tracking-tight block mb-3">
-              Lumina & Toque
-            </span>
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                src={LOGO_IMAGE}
+                alt="Alessandra Chastel"
+                className="w-12 h-12 rounded-full object-cover border border-[#C5A880]/50 shrink-0"
+              />
+              <div>
+                <span className="text-xl font-serif font-bold text-white tracking-tight block leading-tight">
+                  Alessandra Chastel
+                </span>
+                <span className="text-[11px] text-[#C5A880] uppercase tracking-wider block font-medium">
+                  Massoterapia & Epilação
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-[#C5A880] italic font-serif mb-3">
+              Cuidado que relaxa | Beleza que transforma
+            </p>
             <p className="text-xs text-[#A89F95] leading-relaxed mb-6">
-              Studio especializado em massoterapia clínica e relaxante, e epilação suave com cera morna hipoalergênica. Respeito à sua pele e ao seu tempo.
+              Atendimento personalizado com técnicas integrativas de massoterapia clínica e relaxante, e epilação suave com cera morna hipoalergênica.
             </p>
             <div className="text-xs text-[#C5BBAE] space-y-1">
               <span className="block font-medium text-white">CNPJ: 45.892.102/0001-44</span>
@@ -113,7 +129,7 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-[#2F3831] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#8C8379]">
-          <p>© {new Date().getFullYear()} Lumina & Toque Studio. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Alessandra Chastel · Massoterapia e Epilação. Todos os direitos reservados.</p>
           <div className="flex items-center gap-6">
             <span className="text-[#8FA89B]">Sem pagamento antecipado · Agendamento 100% gratuito</span>
           </div>

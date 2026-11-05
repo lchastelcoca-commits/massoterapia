@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Service, Professional, Appointment } from '../types';
-import { SERVICES_DATA, PROFESSIONALS_DATA, AVAILABLE_TIME_SLOTS } from '../data/servicesData';
+import { SERVICES_DATA, PROFESSIONALS_DATA, AVAILABLE_TIME_SLOTS, LOGO_IMAGE } from '../data/servicesData';
 import {
   X,
   Calendar as CalendarIcon,
@@ -169,7 +169,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   // WhatsApp formatted link
   const generateWhatsAppLink = (app: Appointment) => {
     const formattedDate = app.date.split('-').reverse().join('/');
-    const msg = `Olá! Gostaria de confirmar meu agendamento na Lumina & Toque:\n\n*Código:* ${app.id}\n*Serviço:* ${app.serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${app.timeSlot}\n*Profissional:* ${app.professionalName}\n*Cliente:* ${app.clientName}\n*Valor a pagar no local:* R$ ${app.price},00\n\nMuito obrigado(a)!`;
+    const msg = `Olá! Gostaria de confirmar meu agendamento com Alessandra Chastel - Massoterapia e Epilação:\n\n*Código:* ${app.id}\n*Serviço:* ${app.serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${app.timeSlot}\n*Profissional:* ${app.professionalName}\n*Cliente:* ${app.clientName}\n*Valor a pagar no local:* R$ ${app.price},00\n\nMuito obrigado(a)!`;
     return `https://wa.me/5511999998888?text=${encodeURIComponent(msg)}`;
   };
 
@@ -187,13 +187,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Lumina & Toque//Agendamento//PT',
+      'PRODID:-//Alessandra Chastel//Agendamento//PT',
       'BEGIN:VEVENT',
-      `UID:${app.id}@luminatoque.com.br`,
+      `UID:${app.id}@alessandrachastel.com.br`,
       `DTSTAMP:${toIcsDate(new Date())}`,
       `DTSTART:${toIcsDate(startDate)}`,
       `DTEND:${toIcsDate(endDate)}`,
-      `SUMMARY:${app.serviceName} - Lumina & Toque`,
+      `SUMMARY:${app.serviceName} - Alessandra Chastel`,
       `DESCRIPTION:Agendamento confirmado para ${app.clientName}. Profissional: ${app.professionalName}. Valor no local: R$ ${app.price}\\,00.`,
       'LOCATION:Alameda Lorena, 1420 - Jardins, São Paulo - SP',
       'STATUS:CONFIRMED',
@@ -220,15 +220,23 @@ export const BookingModal: React.FC<BookingModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="p-6 border-b border-[#EAE3D9] flex items-center justify-between bg-[#F4EFE6]">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#7A6B5D]">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Agendamento de Atendimento</span>
+        <div className="p-5 sm:p-6 border-b border-[#EAE3D9] flex items-center justify-between bg-[#F4EFE6]">
+          <div className="flex items-center gap-3">
+            <img
+              src={LOGO_IMAGE}
+              alt="Alessandra Chastel"
+              className="w-11 h-11 rounded-full object-cover border border-[#C5A880]/50 shrink-0"
+            />
+            <div>
+              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#7A6B5D]">
+                <span>Alessandra Chastel</span>
+                <span aria-hidden="true">·</span>
+                <span>Agendamento Online</span>
+              </div>
+              <h3 className="text-xl sm:text-2xl font-serif font-semibold text-[#1F2421] mt-0.5">
+                {step === 6 ? 'Reserva Realizada com Sucesso!' : 'Reserve seu Horário'}
+              </h3>
             </div>
-            <h3 className="text-xl sm:text-2xl font-serif font-semibold text-[#1F2421] mt-0.5">
-              {step === 6 ? 'Reserva Realizada com Sucesso!' : 'Reserve seu Horário'}
-            </h3>
           </div>
           <button
             onClick={onClose}
@@ -629,13 +637,17 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           {/* STEP 6: Success Voucher */}
           {step === 6 && createdAppointment && (
             <div className="text-center py-4 space-y-6">
-              <div className="w-14 h-14 rounded-full bg-[#E5ECE7] text-[#2A3B32] mx-auto flex items-center justify-center">
-                <Check className="w-8 h-8" />
+              <div className="flex items-center justify-center gap-3">
+                <img
+                  src={LOGO_IMAGE}
+                  alt="Alessandra Chastel"
+                  className="w-14 h-14 rounded-full object-cover border-2 border-[#C5A880]/60 shadow-xs"
+                />
               </div>
 
               <div>
                 <span className="text-xs uppercase tracking-widest text-[#7A6B5D] font-semibold">
-                  Código da Reserva
+                  Alessandra Chastel · Código da Reserva
                 </span>
                 <div className="text-3xl font-serif font-bold text-[#1F2421] mt-1 tabular-nums">
                   #{createdAppointment.id}

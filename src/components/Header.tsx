@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Menu, X, Sparkles } from 'lucide-react';
+import { LOGO_IMAGE } from '../data/servicesData';
 
 interface HeaderProps {
   onOpenBooking: () => void;
@@ -18,15 +19,24 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-40 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-[#EAE3D9]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-8 h-20">
-          {/* Zone 1: Brand title wordmark */}
+          {/* Zone 1: Brand title wordmark with official logo */}
           <a
             href="#"
-            className="group flex items-center gap-2 text-2xl font-serif font-semibold tracking-tight text-[#1F2421] whitespace-nowrap shrink-0"
+            className="group flex items-center gap-3 whitespace-nowrap shrink-0"
           >
-            <span className="w-8 h-8 rounded-full bg-[#E8DDD1] flex items-center justify-center text-[#705238] transition-transform duration-300 group-hover:scale-105">
-              <Sparkles className="w-4 h-4" />
-            </span>
-            <span>Lumina & Toque</span>
+            <img
+              src={LOGO_IMAGE}
+              alt="Alessandra Chastel - Massoterapia e Epilação"
+              className="w-11 h-11 sm:w-12 sm:h-12 rounded-full object-cover shadow-xs border border-[#C5A880]/50 transition-transform duration-300 group-hover:scale-105"
+            />
+            <div className="flex flex-col">
+              <span className="text-xl sm:text-2xl font-serif font-bold tracking-tight text-[#1F2421] leading-tight">
+                Alessandra Chastel
+              </span>
+              <span className="text-[10px] sm:text-[11px] uppercase tracking-wider text-[#8A7968] font-medium leading-none">
+                Massoterapia e Epilação
+              </span>
+            </div>
           </a>
 
           {/* Zone 2: 4-5 single-line clean text navigation links */}

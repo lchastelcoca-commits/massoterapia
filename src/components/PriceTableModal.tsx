@@ -1,5 +1,5 @@
 import React from 'react';
-import { SERVICES_DATA } from '../data/servicesData';
+import { SERVICES_DATA, LOGO_IMAGE } from '../data/servicesData';
 import { Service } from '../types';
 import { X, CreditCard, ChevronRight } from 'lucide-react';
 
@@ -27,13 +27,20 @@ export const PriceTableModal: React.FC<PriceTableModalProps> = ({
       >
         {/* Header */}
         <div className="p-6 border-b border-[#EAE3D9] flex items-center justify-between">
-          <div>
-            <div className="text-xs font-medium uppercase tracking-wider text-[#7A6B5D]">
-              Tabela Completa de Preços
+          <div className="flex items-center gap-3">
+            <img
+              src={LOGO_IMAGE}
+              alt="Alessandra Chastel"
+              className="w-11 h-11 rounded-full object-cover border border-[#C5A880]/50 shrink-0"
+            />
+            <div>
+              <div className="text-xs font-medium uppercase tracking-wider text-[#7A6B5D]">
+                Alessandra Chastel · Tabela Completa de Preços
+              </div>
+              <h3 className="text-2xl font-serif font-semibold text-[#1F2421]">
+                Investimento & Procedimentos
+              </h3>
             </div>
-            <h3 className="text-2xl font-serif font-semibold text-[#1F2421]">
-              Investimento & Procedimentos
-            </h3>
           </div>
           <button
             onClick={onClose}
