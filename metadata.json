@@ -1,0 +1,6 @@
+{
+  "name": "Lumina & Toque — Massoterapia e Epilação",
+  "description": "Agendamento online de serviços de massoterapia e epilação com preços transparentes e pagamento direto no local, sem cobrança antecipada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
