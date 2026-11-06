@@ -60,12 +60,6 @@ export const Header: React.FC<HeaderProps> = ({
               O Studio
             </a>
             <a
-              href="#profissionais"
-              className="hover:text-[#1F2421] transition-colors whitespace-nowrap shrink-0"
-            >
-              Especialistas
-            </a>
-            <a
               href="#duvidas"
               className="hover:text-[#1F2421] transition-colors whitespace-nowrap shrink-0"
             >
@@ -142,13 +136,6 @@ export const Header: React.FC<HeaderProps> = ({
               className="px-3 py-2 rounded-md hover:bg-[#F2ECE3] transition-colors"
             >
               O Studio
-            </a>
-            <a
-              href="#profissionais"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 rounded-md hover:bg-[#F2ECE3] transition-colors"
-            >
-              Especialistas
             </a>
             <a
               href="#duvidas"

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Service, Professional, Appointment } from './types';
+import { Service, Appointment } from './types';
 import { SERVICES_DATA } from './data/servicesData';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { HowItWorks } from './components/HowItWorks';
 import { ServicesCatalog } from './components/ServicesCatalog';
 import { StudioExperience } from './components/StudioExperience';
-import { TherapistsSection } from './components/TherapistsSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { FAQSection } from './components/FAQSection';
 import { Footer } from './components/Footer';
@@ -46,11 +45,6 @@ export default function App() {
 
   const handleOpenBooking = (service?: Service) => {
     setServiceToBook(service || null);
-    setIsBookingOpen(true);
-  };
-
-  const handleSelectProfessional = (prof: Professional) => {
-    // If a professional was selected, we can open the booking modal
     setIsBookingOpen(true);
   };
 
@@ -94,11 +88,6 @@ export default function App() {
 
         {/* Studio Ambiance & Hygiene Experience */}
         <StudioExperience />
-
-        {/* Dedicated Therapists */}
-        <TherapistsSection
-          onSelectProfessionalToBook={(prof) => handleSelectProfessional(prof)}
-        />
 
         {/* Testimonials */}
         <TestimonialsSection />

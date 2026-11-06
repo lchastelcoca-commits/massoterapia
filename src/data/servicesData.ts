@@ -197,24 +197,6 @@ export const SERVICES_DATA: Service[] = [
     recommendedFor: 'Rosto harmônico, pele fina e alérgica a ceras químicas.',
     image: EPILATION_IMAGE
   },
-  {
-    id: 'epilacao-masculina-dorsal',
-    name: 'Epilação Masculina Costas & Ombros',
-    category: 'epilacao',
-    tagline: 'Cera de alta aderência formulada para pelos masculinos densos.',
-    price: 90,
-    priceFormatted: 'R$ 90,00',
-    durationMinutes: 40,
-    durationFormatted: '40 min',
-    description: 'Tratamento específico para as costas e ombros com cera verde emoliente, reduzindo o desconforto e prevenindo pelos encravados.',
-    benefits: [
-      'Excelente durabilidade (até 4 semanas limpo)',
-      'Finalização com spray antisséptico refrescante',
-      'Total privacidade e conforto em cabine individual'
-    ],
-    recommendedFor: 'Homens que praticam esportes, natação ou sentem desconforto com pelos.',
-    image: EPILATION_IMAGE
-  },
 
   // --- COMBOS ---
   {

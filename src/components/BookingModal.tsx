@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Service, Professional, Appointment } from '../types';
-import { SERVICES_DATA, PROFESSIONALS_DATA, AVAILABLE_TIME_SLOTS, LOGO_IMAGE } from '../data/servicesData';
+import { Service, Appointment } from '../types';
+import { SERVICES_DATA, AVAILABLE_TIME_SLOTS, LOGO_IMAGE } from '../data/servicesData';
 import {
   X,
   Calendar as CalendarIcon,
   Clock,
-  User,
   CreditCard,
   ChevronRight,
   ChevronLeft,
@@ -31,19 +30,18 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   onAppointmentCreated,
   onViewMyAppointments,
 }) => {
-  // Steps: 1: Service, 2: Professional, 3: Date & Time, 4: Client Info, 5: Review, 6: Success
+  // Steps: 1: Service, 2: Date & Time, 3: Client Info, 4: Review & Confirm, 5: Success Voucher
   const [step, setStep] = useState<number>(1);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-  const [selectedProfessional, setSelectedProfessional] = useState<string>('any'); // 'any' or professional id
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
-  
+
   // Client details
   const [clientName, setClientName] = useState('');
   const [clientPhone, setClientPhone] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [clientNotes, setClientNotes] = useState('');
-  
+
   // Confirmed appointment
   const [createdAppointment, setCreatedAppointment] = useState<Appointment | null>(null);
   const [formErrors, setFormErrors] = useState<{ name?: string; phone?: string; email?: string }>({});
@@ -53,10 +51,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     if (isOpen) {
       if (initialService) {
         setSelectedService(initialService);
-        setStep(2); // Jump straight to professional/date if service already chosen
+        setStep(2); // Jump straight to date & time
       } else {
         setStep(1);
       }
+
       // Default to tomorrow's date if not chosen
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -66,14 +65,13 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       setSelectedDate(`${yyyy}-${mm}-${dd}`);
       setSelectedTime('10:45');
     } else {
-      // Reset on close
       setCreatedAppointment(null);
     }
   }, [isOpen, initialService]);
 
   if (!isOpen) return null;
 
-  // Generate next 14 days for date picker
+  // Generate next 14 business days for date picker
   const generateAvailableDates = () => {
     const dates = [];
     const today = new Date();
@@ -81,15 +79,16 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       const d = new Date(today);
       d.setDate(today.getDate() + i);
       const isSunday = d.getDay() === 0;
-      if (!isSunday) { // Studio closed on Sunday
+      if (!isSunday) {
+        // Studio open Mon-Sat
         const yyyy = d.getFullYear();
         const mm = String(d.getMonth() + 1).padStart(2, '0');
         const dd = String(d.getDate()).padStart(2, '0');
         const iso = `${yyyy}-${mm}-${dd}`;
-        
+
         const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
         const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-        
+
         dates.push({
           iso,
           dayName: weekDays[d.getDay()],
@@ -104,7 +103,6 @@ export const BookingModal: React.FC<BookingModalProps> = ({
   const availableDates = generateAvailableDates();
 
   const handlePhoneChange = (val: string) => {
-    // Basic formatting for (XX) XXXXX-XXXX
     const cleaned = val.replace(/\D/g, '').slice(0, 11);
     let formatted = cleaned;
     if (cleaned.length > 2) {
@@ -116,31 +114,25 @@ export const BookingModal: React.FC<BookingModalProps> = ({
     setClientPhone(formatted);
   };
 
-  const validateStep4 = () => {
+  const validateStep3 = () => {
     const errors: { name?: string; phone?: string; email?: string } = {};
     if (!clientName.trim()) {
       errors.name = 'Por favor, informe seu nome completo.';
     }
     if (!clientPhone.trim() || clientPhone.replace(/\D/g, '').length < 10) {
-      errors.phone = 'Informe um número de WhatsApp válido com DDD.';
+      errors.phone = 'Informe um WhatsApp válido com DDD.';
     }
     if (!clientEmail.trim() || !clientEmail.includes('@')) {
-      errors.email = 'Informe um e-mail válido para receber a confirmação.';
+      errors.email = 'Informe um e-mail válido para receber os dados do agendamento.';
     }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const getProfessionalName = (id: string) => {
-    if (id === 'any') return 'Primeira profissional disponível';
-    const prof = PROFESSIONALS_DATA.find((p) => p.id === id);
-    return prof ? prof.name : 'Profissional especialista';
-  };
-
   const handleConfirmAppointment = () => {
     if (!selectedService) return;
 
-    const appointmentId = `LUM-${Math.floor(1000 + Math.random() * 9000)}`;
+    const appointmentId = `AC-${Math.floor(1000 + Math.random() * 9000)}`;
     const newAppointment: Appointment = {
       id: appointmentId,
       serviceId: selectedService.id,
@@ -148,8 +140,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       category: selectedService.category,
       price: selectedService.price,
       durationMinutes: selectedService.durationMinutes,
-      professionalId: selectedProfessional,
-      professionalName: getProfessionalName(selectedProfessional),
+      professionalId: 'alessandra-chastel',
+      professionalName: 'Alessandra Chastel',
       date: selectedDate,
       timeSlot: selectedTime,
       clientName: clientName.trim(),
@@ -160,16 +152,15 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       status: 'confirmed',
     };
 
-    // Save to parent state and localStorage
     onAppointmentCreated(newAppointment);
     setCreatedAppointment(newAppointment);
-    setStep(6); // Success screen
+    setStep(5); // Success voucher
   };
 
   // WhatsApp formatted link
   const generateWhatsAppLink = (app: Appointment) => {
     const formattedDate = app.date.split('-').reverse().join('/');
-    const msg = `Olá! Gostaria de confirmar meu agendamento com Alessandra Chastel - Massoterapia e Epilação:\n\n*Código:* ${app.id}\n*Serviço:* ${app.serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${app.timeSlot}\n*Profissional:* ${app.professionalName}\n*Cliente:* ${app.clientName}\n*Valor a pagar no local:* R$ ${app.price},00\n\nMuito obrigado(a)!`;
+    const msg = `Olá, Alessandra! Gostaria de confirmar meu agendamento no seu estúdio:\n\n*Código:* ${app.id}\n*Procedimento:* ${app.serviceName}\n*Data:* ${formattedDate}\n*Horário:* ${app.timeSlot}\n*Atendimento com:* Alessandra Chastel\n*Cliente:* ${app.clientName}\n*Valor a pagar no local:* R$ ${app.price},00\n\nMuito obrigada!`;
     return `https://wa.me/5511999998888?text=${encodeURIComponent(msg)}`;
   };
 
@@ -194,7 +185,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
       `DTSTART:${toIcsDate(startDate)}`,
       `DTEND:${toIcsDate(endDate)}`,
       `SUMMARY:${app.serviceName} - Alessandra Chastel`,
-      `DESCRIPTION:Agendamento confirmado para ${app.clientName}. Profissional: ${app.professionalName}. Valor no local: R$ ${app.price}\\,00.`,
+      `DESCRIPTION:Atendimento confirmado com Alessandra Chastel para ${app.clientName}. Procedimento: ${app.serviceName}. Valor no local: R$ ${app.price}\\,00.`,
       'LOCATION:Alameda Lorena, 1420 - Jardins, São Paulo - SP',
       'STATUS:CONFIRMED',
       'END:VEVENT',
@@ -234,7 +225,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 <span>Agendamento Online</span>
               </div>
               <h3 className="text-xl sm:text-2xl font-serif font-semibold text-[#1F2421] mt-0.5">
-                {step === 6 ? 'Reserva Realizada com Sucesso!' : 'Reserve seu Horário'}
+                {step === 5 ? 'Reserva Realizada com Sucesso!' : 'Reserve seu Horário'}
               </h3>
             </div>
           </div>
@@ -247,42 +238,35 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           </button>
         </div>
 
-        {/* Step Indicator (Steps 1 to 5) */}
-        {step < 6 && (
+        {/* Step Indicator (Steps 1 to 4) */}
+        {step < 5 && (
           <div className="px-6 py-3 bg-[#FAF8F5] border-b border-[#EAE3D9] flex items-center justify-between text-xs text-[#7A6B5D]">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${step >= 1 ? 'bg-[#2A3B32] text-white' : 'bg-[#E5DCD0] text-[#7A6B5D]'}`}>
                 1
               </span>
-              <span className="hidden sm:inline font-medium text-[#1F2421]">Serviço</span>
+              <span className="font-medium text-[#1F2421]">Procedimento</span>
             </div>
-            <div className="w-6 h-px bg-[#E2D6C6]" />
+            <div className="w-8 sm:w-12 h-px bg-[#E2D6C6]" />
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${step >= 2 ? 'bg-[#2A3B32] text-white' : 'bg-[#E5DCD0] text-[#7A6B5D]'}`}>
                 2
               </span>
-              <span className="hidden sm:inline font-medium text-[#1F2421]">Profissional</span>
+              <span className="font-medium text-[#1F2421]">Data & Hora</span>
             </div>
-            <div className="w-6 h-px bg-[#E2D6C6]" />
+            <div className="w-8 sm:w-12 h-px bg-[#E2D6C6]" />
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${step >= 3 ? 'bg-[#2A3B32] text-white' : 'bg-[#E5DCD0] text-[#7A6B5D]'}`}>
                 3
               </span>
-              <span className="hidden sm:inline font-medium text-[#1F2421]">Data & Hora</span>
+              <span className="font-medium text-[#1F2421]">Seus Dados</span>
             </div>
-            <div className="w-6 h-px bg-[#E2D6C6]" />
+            <div className="w-8 sm:w-12 h-px bg-[#E2D6C6]" />
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${step >= 4 ? 'bg-[#2A3B32] text-white' : 'bg-[#E5DCD0] text-[#7A6B5D]'}`}>
                 4
               </span>
-              <span className="hidden sm:inline font-medium text-[#1F2421]">Seus Dados</span>
-            </div>
-            <div className="w-6 h-px bg-[#E2D6C6]" />
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold ${step >= 5 ? 'bg-[#2A3B32] text-white' : 'bg-[#E5DCD0] text-[#7A6B5D]'}`}>
-                5
-              </span>
-              <span className="hidden sm:inline font-medium text-[#1F2421]">Confirmar</span>
+              <span className="font-medium text-[#1F2421]">Confirmar</span>
             </div>
           </div>
         )}
@@ -293,7 +277,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           {step === 1 && (
             <div className="space-y-4">
               <div className="text-sm font-semibold text-[#1F2421] mb-2">
-                Escolha o procedimento desejado:
+                Escolha o procedimento que deseja realizar:
               </div>
               <div className="space-y-2.5">
                 {SERVICES_DATA.map((service) => (
@@ -311,7 +295,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                         {service.category === 'massoterapia'
                           ? 'Massoterapia'
                           : service.category === 'epilacao'
-                          ? 'Epilação'
+                          ? 'Epilação Suave'
                           : 'Combo'}
                       </div>
                       <h4 className="text-base font-semibold text-[#1F2421]">
@@ -334,85 +318,24 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             </div>
           )}
 
-          {/* STEP 2: Select Professional */}
+          {/* STEP 2: Date & Time Picker */}
           {step === 2 && selectedService && (
-            <div className="space-y-4">
-              <div className="p-3 rounded-lg bg-[#F3EDE3] border border-[#E3DACD] flex items-center justify-between text-xs">
+            <div className="space-y-6">
+              {/* Selected service summary pill */}
+              <div className="p-3.5 rounded-xl bg-[#F3EDE3] border border-[#E3DACD] flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-[#7A6B5D] block">Procedimento selecionado:</span>
+                  <span className="text-[#7A6B5D] block">Procedimento escolhido:</span>
                   <span className="font-semibold text-[#1F2421] text-sm">{selectedService.name}</span>
                 </div>
                 <div className="text-right">
                   <span className="text-xs text-[#7A6B5D] block">{selectedService.durationFormatted}</span>
-                  <span className="font-serif font-bold text-[#1F2421]">{selectedService.priceFormatted}</span>
+                  <span className="font-serif font-bold text-[#1F2421] text-base">{selectedService.priceFormatted}</span>
                 </div>
               </div>
 
-              <div className="text-sm font-semibold text-[#1F2421] pt-2">
-                Deseja escolher um profissional específico?
-              </div>
-
-              <div className="space-y-3">
-                {/* Option: Any available */}
-                <div
-                  onClick={() => setSelectedProfessional('any')}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-3.5 ${
-                    selectedProfessional === 'any'
-                      ? 'border-[#2A3B32] bg-[#F2EDE4] ring-1 ring-[#2A3B32]'
-                      : 'border-[#E6DDD1] bg-white hover:border-[#D5C7B7]'
-                  }`}
-                >
-                  <div className="w-11 h-11 rounded-full bg-[#E5DCD0] flex items-center justify-center text-[#2A3B32] shrink-0">
-                    <Sparkles className="w-5 h-5" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-[#1F2421]">
-                      Qualquer Profissional Disponível
-                    </h4>
-                    <p className="text-xs text-[#6B6157]">
-                      Recomendado para quem busca maior flexibilidade de horários.
-                    </p>
-                  </div>
-                  {selectedProfessional === 'any' && (
-                    <Check className="w-5 h-5 text-[#2A3B32]" />
-                  )}
-                </div>
-
-                {/* Specific therapists */}
-                {PROFESSIONALS_DATA.map((prof) => (
-                  <div
-                    key={prof.id}
-                    onClick={() => setSelectedProfessional(prof.id)}
-                    className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-3.5 ${
-                      selectedProfessional === prof.id
-                        ? 'border-[#2A3B32] bg-[#F2EDE4] ring-1 ring-[#2A3B32]'
-                        : 'border-[#E6DDD1] bg-white hover:border-[#D5C7B7]'
-                    }`}
-                  >
-                    <img
-                      src={prof.avatar}
-                      alt={prof.name}
-                      className="w-11 h-11 rounded-full object-cover shrink-0 border border-[#DDD3C5]"
-                    />
-                    <div className="flex-1">
-                      <h4 className="text-sm font-semibold text-[#1F2421]">{prof.name}</h4>
-                      <p className="text-xs text-[#6B6157] line-clamp-1">{prof.role}</p>
-                    </div>
-                    {selectedProfessional === prof.id && (
-                      <Check className="w-5 h-5 text-[#2A3B32]" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Date & Time Picker */}
-          {step === 3 && selectedService && (
-            <div className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-[#1F2421] mb-2">
-                  Escolha o dia do atendimento:
+                <label className="block text-sm font-semibold text-[#1F2421] mb-2.5">
+                  Escolha o dia do seu atendimento:
                 </label>
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                   {availableDates.map((item) => {
@@ -444,8 +367,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-[#1F2421] mb-2 flex items-center justify-between">
-                  <span>Horários disponíveis:</span>
+                <label className="block text-sm font-semibold text-[#1F2421] mb-2.5 flex items-center justify-between">
+                  <span>Horários disponíveis com Alessandra:</span>
                   <span className="text-xs font-normal text-[#7A6B5D]">Duração: {selectedService.durationFormatted}</span>
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
@@ -472,19 +395,19 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
               <div className="p-3 bg-[#F4EFE6] rounded-lg border border-[#E4D9C8] text-xs text-[#524941] flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#705238] shrink-0" />
-                <span>Horário mantido exclusivamente para você. Sem taxa de agendamento online.</span>
+                <span>Atendimento exclusivo e individualizado com Alessandra Chastel. Sem cobrança online.</span>
               </div>
             </div>
           )}
 
-          {/* STEP 4: Client Information */}
-          {step === 4 && (
+          {/* STEP 3: Client Information */}
+          {step === 3 && (
             <div className="space-y-4">
               <div className="text-sm font-semibold text-[#1F2421] mb-1">
-                Seus dados para confirmação:
+                Seus dados para confirmação da reserva:
               </div>
               <p className="text-xs text-[#6B6157] mb-4">
-                Utilizamos estes dados para enviar a confirmação do horário e local. Não solicitamos dados bancários nem cartão.
+                Preencha seus dados para receber o comprovante no WhatsApp e por e-mail. Não solicitamos dados de cartão de crédito.
               </p>
 
               <div>
@@ -493,7 +416,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </label>
                 <input
                   type="text"
-                  placeholder="Ex: Ana Clara Silva"
+                  placeholder="Ex: Mariana Silva"
                   value={clientName}
                   onChange={(e) => setClientName(e.target.value)}
                   className={`w-full px-4 py-2.5 rounded-lg border text-sm bg-white text-[#1F2421] focus:outline-hidden focus:ring-1 transition-colors ${
@@ -530,7 +453,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
 
                 <div>
                   <label className="block text-xs font-semibold text-[#1F2421] uppercase tracking-wide mb-1.5">
-                    E-mail para confirmação *
+                    E-mail para envio do comprovante *
                   </label>
                   <input
                     type="email"
@@ -555,7 +478,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </label>
                 <textarea
                   rows={2}
-                  placeholder="Ex: Pele muito sensível, gestante, dores crônicas na cervical, etc."
+                  placeholder="Ex: Pele sensível, gestante, dores lombares específicas, etc."
                   value={clientNotes}
                   onChange={(e) => setClientNotes(e.target.value)}
                   className="w-full px-4 py-2 rounded-lg border border-[#DDD3C5] text-sm bg-white text-[#1F2421] focus:outline-hidden focus:border-[#2A3B32] focus:ring-1 focus:ring-[#2A3B32] transition-colors"
@@ -564,11 +487,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
             </div>
           )}
 
-          {/* STEP 5: Review & Confirm */}
-          {step === 5 && selectedService && (
+          {/* STEP 4: Review & Confirm */}
+          {step === 4 && selectedService && (
             <div className="space-y-5">
               <div className="text-sm font-semibold text-[#1F2421]">
-                Confira os detalhes da sua reserva:
+                Confira os detalhes da sua reserva com Alessandra Chastel:
               </div>
 
               <div className="bg-white rounded-xl border border-[#E5DDD2] p-5 space-y-4 shadow-xs">
@@ -601,10 +524,11 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </div>
 
                   <div>
-                    <span className="text-[#8C8072] block font-medium">Profissional:</span>
+                    <span className="text-[#8C8072] block font-medium">Atendimento:</span>
                     <span className="text-sm font-semibold text-[#1F2421]">
-                      {getProfessionalName(selectedProfessional)}
+                      Alessandra Chastel
                     </span>
+                    <span className="text-[#7A6B5D] block">Massoterapia e Epilação</span>
                   </div>
 
                   <div>
@@ -628,14 +552,14 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   <strong className="text-[#2F2720] block mb-0.5 text-sm">
                     Total devido no local: {selectedService.priceFormatted}
                   </strong>
-                  Você não paga nada agora neste site. O valor será pago no estúdio após seu atendimento via PIX, Débito, Crédito ou Dinheiro.
+                  Você não paga nada agora no site. O valor será pago no estúdio após seu atendimento via PIX, Débito, Crédito ou Dinheiro.
                 </div>
               </div>
             </div>
           )}
 
-          {/* STEP 6: Success Voucher */}
-          {step === 6 && createdAppointment && (
+          {/* STEP 5: Success Voucher */}
+          {step === 5 && createdAppointment && (
             <div className="text-center py-4 space-y-6">
               <div className="flex items-center justify-center gap-3">
                 <img
@@ -653,7 +577,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   #{createdAppointment.id}
                 </div>
                 <p className="text-sm text-[#5C534B] mt-2 max-w-md mx-auto">
-                  Tudo pronto, <strong>{createdAppointment.clientName}</strong>! Seu horário está garantido em nossa agenda.
+                  Tudo pronto, <strong>{createdAppointment.clientName}</strong>! Seu horário está garantido com Alessandra Chastel.
                 </p>
               </div>
 
@@ -670,8 +594,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   </span>
                 </div>
                 <div className="flex justify-between border-b border-[#F0E9DF] pb-2">
-                  <span className="text-[#8C8072]">Profissional:</span>
-                  <span className="font-semibold text-[#1F2421]">{createdAppointment.professionalName}</span>
+                  <span className="text-[#8C8072]">Atendimento:</span>
+                  <span className="font-semibold text-[#1F2421]">Alessandra Chastel</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#8C8072]">Pagamento no Local:</span>
@@ -718,8 +642,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
           )}
         </div>
 
-        {/* Modal Footer (Steps 1 to 5) */}
-        {step < 6 && (
+        {/* Modal Footer (Steps 1 to 4) */}
+        {step < 5 && (
           <div className="p-4 sm:p-6 bg-[#F4EFE6] border-t border-[#EAE3D9] flex items-center justify-between">
             {step > 1 ? (
               <button
@@ -742,7 +666,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                   onClick={() => setStep(2)}
                   className="px-6 py-2.5 text-xs font-semibold text-white bg-[#2A3B32] hover:bg-[#1E2B24] rounded-md transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1"
                 >
-                  <span>Continuar</span>
+                  <span>Escolher Data & Hora</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               )}
@@ -750,19 +674,8 @@ export const BookingModal: React.FC<BookingModalProps> = ({
               {step === 2 && (
                 <button
                   type="button"
-                  onClick={() => setStep(3)}
-                  className="px-6 py-2.5 text-xs font-semibold text-white bg-[#2A3B32] hover:bg-[#1E2B24] rounded-md transition-colors cursor-pointer flex items-center gap-1"
-                >
-                  <span>Escolher Data & Hora</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-
-              {step === 3 && (
-                <button
-                  type="button"
                   disabled={!selectedDate || !selectedTime}
-                  onClick={() => setStep(4)}
+                  onClick={() => setStep(3)}
                   className="px-6 py-2.5 text-xs font-semibold text-white bg-[#2A3B32] hover:bg-[#1E2B24] rounded-md transition-colors disabled:opacity-50 cursor-pointer flex items-center gap-1"
                 >
                   <span>Preencher Meus Dados</span>
@@ -770,12 +683,12 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </button>
               )}
 
-              {step === 4 && (
+              {step === 3 && (
                 <button
                   type="button"
                   onClick={() => {
-                    if (validateStep4()) {
-                      setStep(5);
+                    if (validateStep3()) {
+                      setStep(4);
                     }
                   }}
                   className="px-6 py-2.5 text-xs font-semibold text-white bg-[#2A3B32] hover:bg-[#1E2B24] rounded-md transition-colors cursor-pointer flex items-center gap-1"
@@ -785,7 +698,7 @@ export const BookingModal: React.FC<BookingModalProps> = ({
                 </button>
               )}
 
-              {step === 5 && (
+              {step === 4 && (
                 <button
                   type="button"
                   onClick={handleConfirmAppointment}
